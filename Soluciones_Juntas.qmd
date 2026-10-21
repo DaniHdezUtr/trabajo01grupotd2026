@@ -1,0 +1,276 @@
+---
+title: "Problemas_Juntos"
+format: html
+editor: visual
+---
+## Introducción
+
+En esta parte volveremos a poner los enunciados de los problemas, pero ya haremos la resolución de ellos usando los códigos de R aprendidos en la asignatura.
+
+
+### Problema 1
+
+Una compañía dedicada al entretenimiento digital está evaluando en qué plataforma debe invertir su presupuesto para el desarrollo de licencias, centrándose en cuatro opciones principales (PlayStation5, Xbox Series X, Nintendo Switch 2, PCs de gama alta), , nos dan la siguiente matriz, a poderse interpretar tanto en caso favorable(beneficios) como desfavorable(costes):
+
+| Plataforma | $e_1$ (Demanda baja) | $e_2$ (Demanda moderada) | $e_3$ (Éxito masivo) |
+|:-----------------|:----------------:|:----------------:|:----------------:|
+| $d_1$ (PlayStation 5) | 18 | 42 | 95 |
+| $d_2$ (Xbox Series X) | 25 | 55 | 75 |
+| $d_3$ (Nintendo Switch 2) | 12 | 28 | 110 |
+| $d_4$ (PC de Gama Alta) | 40 | 40 | 40 |
+
+**Resuelva el problema usando todos los métodos, en casos favorables y desfavorables, e indique si son verdaderas o falsas las siguientes cuestiones:**
+
+1.  Siguiendo el criterio optimista en situación favorable, la alternativa seleccionada es $d_3$ (Nintendo Switch 2).
+
+2.  El criterio de Wald bajo situación desfavorable selecciona la alternativa $d_4$ (PC de Gama Alta) como la opción más conservadora.
+
+3.  El criterio de Laplace en situación desfavorable determina que la mejor alternativa es $d_1$ (PlayStation 5).
+
+4.  El criterio de Hurwicz con un índice de optimismo $\alpha = 0.5$ indica que la mejor decisión es $d_3$ (Nintendo Switch 2) en situación favorable.
+
+5.  El criterio de Savage en situación favorable selecciona la alternativa $d_2$ (Xbox Series X).
+
+#### Resolución
+
+``` {r}
+source("teoriadecision_funciones_incertidumbre.R")
+```
+Definimos la matriz de decisión en R:
+
+```{r}
+tabla_dec1 <- matrix(
+  c(18, 42,  95,
+    25, 55,  75,
+    12, 28, 110,
+    40, 40,  40),
+  nrow = 4, byrow = TRUE)
+rownames(tabla_dec1) <- c("d1_PlayStation5", "d2_XboxSeriesX", "d3_NintendoSwitch2", "d4_PCGamaAlta")
+colnames(tabla_dec1) <- c("e1_DemandaBaja", "e2_DemandaModerada", "e3_ExitoMasivo")
+print(tabla_dec1)
+```
+Resolvemos con cada uno de los criterios:
+
+```{r}
+
+cat("          CASO A: SITUACIÓN FAVORABLE (BENEFICIOS)   \n")
+
+
+cat("\n-- Criterio de Wald --\n")
+criterio.Wald(tabla_dec1, favorable = TRUE)
+
+cat("\n-- Criterio Optimista --\n")
+criterio.Optimista(tabla_dec1, favorable = TRUE)
+
+cat("\n-- Criterio de Laplace --\n")
+criterio.Laplace(tabla_dec1, favorable = TRUE)
+
+cat("\n-- Criterio de Savage --\n")
+criterio.Savage(tabla_dec1, favorable = TRUE)
+
+cat("\n-- Criterio de Hurwicz (alfa = 0.5) --\n")
+criterio.Hurwicz(tabla_dec1, alfa = 0.5, favorable = TRUE)
+
+
+cat("        CASO B: SITUACIÓN DESFAVORABLE (COSTES)      \n")
+
+
+cat("\n1. Criterio de Wald (Minimax / Pesimista):\n")
+print(criterio.Wald(tabla_dec1, favorable = FALSE))
+
+cat("\n2. Criterio Optimista (Minimin):\n")
+print(criterio.Optimista(tabla_dec1, favorable = FALSE))
+
+cat("\n3. Criterio de Laplace (Coste esperado):\n")
+print(criterio.Laplace(tabla_dec1, favorable = FALSE))
+
+cat("\n4. Criterio de Savage (Arrepentimiento para costes):\n")
+print(criterio.Savage(tabla_dec1, favorable = FALSE))
+
+cat("\n5. Criterio de Hurwicz (alfa = 0.5):\n")
+print(criterio.Hurwicz(tabla_dec1, alfa = 0.5, favorable = FALSE))
+```
+Ahora comprobamos si las afirmaciones del enunciado son verdaderas o falsas:
+
+1. Verdadero, en situación favorable (beneficios), el criterio optimista busca el valor máximo absoluto de toda la matriz (Maximax). Los valores máximos de cada fila son: $d_1 (95)$, $d_2 (75)$, $d_3 (110)$, $d_4 (40)$. El máximo absoluto es 110, que corresponde a $d_3$.
+
+2. Verdadero, en situación desfavorable (costes), el criterio de Wald evalúa el peor escenario de cada alternativa (el coste máximo de cada fila) y selecciona el menor de ellos (Minimax). Los valores máximos por fila son: $d_1 (95)$, $d_2 (75)$, $d_3 (110)$ y $d_4 (40)$. El menor de todos esos "peores escenarios" es 40, correspondiente a $d_4$.
+
+3. Falso, en situación desfavorable (costes), Laplace calcula la media de cada alternativa y busca la de menor valor.  $d_1$: (18 + 42 + 95) / 3 = 51.67,  $d_2$: (25 + 55 + 75) / 3 = 51.67,  $d_3$: (12 + 28 + 110) / 3 = 50.00,  $d_4$: (40 + 40 + 40) / 3 = 40.00La mejor alternativa (la que tiene menor media) es $d_4$ (40), no $d_1$.
+
+4. Verdadero, en situación favorable, ponderamos el mejor y el peor valor de cada fila: $0.5 \times \text{Máximo} + 0.5 \times \text{Mínimo}$.
+$d_1$: 0.5(95) + 0.5(18) = 56.5,  $d_2$: 0.5(75) + 0.5(25) = 50.0,  $d_3$: 0.5(110) + 0.5(12) = 61.0,  $d_4$: 0.5(40) + 0.5(40) = 40.0La alternativa con el valor ponderado más alto es $d_3$ (61.0).
+
+5. Falso, Savage calcula la matriz de arrepentimiento restando cada valor al máximo de su columna ($e_1=40, e_2=55, e_3=110$). Los máximos arrepentimientos (peor perjuicio) por alternativa son:   $d_1$: (40-18=22, 55-42=13, 110-95=15) $\rightarrow$ Máximo = 22,   $d_2$: (40-25=15, 55-55=0, 110-75=35) $\rightarrow$ Máximo = 35,   $d_3$: (40-12=28, 55-28=27, 110-110=0) $\rightarrow$ Máximo = 28,   $d_4$: (40-40=0, 55-40=15, 110-40=70) $\rightarrow$ Máximo = 70.
+La alternativa óptima es la que minimiza este máximo arrepentimiento. El menor valor de arrepentimiento máximo es 22, correspondiente a $d_1$ (PlayStation 5), y no $d_2$.
+
+### Problema 2:
+
+Red Eléctrica y un consorcio de productores andaluces están planificando la asignación de capacidad de retoma y transporte para la integración de nueva potencia de generación limpia en la red de alta tensión de la comunidad autónoma. Para ello, se debe decidir qué tecnología priorizar entre cuatro alternativas reales de desarrollo tecnológico (Planta Solar Fotovoltaica en suelo, Parque Eólico Terrestre, Central Termosolar de concentración con almacenamiento térmico, Planta de Hidrógeno Verde asociada a nudo eléctrico).
+
+Los costes totales reales estimados (expresados en millones de euros, incluyendo inversión CAPEX, costes operativos OPEX a 20 años y penalizaciones por desvíos o restricciones técnicas de red) varían en función de cuatro escenarios macroeconómicos y regulatorios del mercado eléctrico español:
+
+| Tecnología | $e_1$ (Marco estable) | $e_2$ (Incremento costes) | $e_3$ (Crisis suministros) | $e_4$ (Saturación nudos) |
+|:--------------|:-------------:|:-------------:|:-------------:|:-------------:|
+| $d_1$ (Solar Fotovoltaica) | 22 | 35 | 55 | 68 |
+| $d_2$ (Eólico Terrestre) | 28 | 32 | 48 | 62 |
+| $d_3$ (Central Termosolar) | 30 | 38 | 50 | 58 |
+| $d_4$ (Hidrógeno Verde) | 35 | 45 | 70 | 80 |
+
+**Resuelva el problema en una única tabla e indique si son verdaderas o falsas:**
+
+1.  Al tratarse de una situación desfavorable, el criterio de Laplace identifica como la alternativa de menor coste medio a $d_2$ (Eólico Terrestre).
+
+2.  El criterio de minimización del coste máximo (Wald aplicado a costes) selecciona la opción $d_3$ (Central Termosolar) como la más segura frente al peor escenario.
+
+3.  El método de Hurwicz con un coeficiente de optimismo $\alpha = 0.5$ sitúa a la opción $d_1$ (Solar Fotovoltaica) como la mejor alternativa de coste mínimo.
+
+4.  El criterio de Savage para costes indica que la alternativa óptima es el $d_4$ (Hidrógeno Verde).
+
+5.  La tabla resumen conjunta obtenida muestra que la alternativa $d_2$ (Eólico Terrestre) es una de las más estables frente al coste global máximo.
+
+#### Resolución:
+
+Definimos la matriz de decisión:
+
+```{r}
+tabla_dec2 <- matrix(
+  c(22, 35, 55, 68,
+    28, 32, 48, 62,
+    30, 38, 50, 58,
+    35, 45, 70, 80),
+  nrow = 4, byrow = TRUE)
+
+rownames(tabla_dec2) <- c("Solar Fotovoltaica", "Eolico Terrestre", "Central Termosolar","Hidrógeno Verde")
+colnames(tabla_dec2) <- c("Marco estable", "Incremento costes", "Crisis suministros", "Saturación nudos")
+print(tabla_dec2)
+```
+Resolvemos en una única tabla:
+
+```{r}
+resultado_prob2<- criterio.Todos(tabla_dec2, alfa = 0.5, favorable = FALSE)
+print(resultado_prob2)
+```
+Ahora comprobamos si las afirmaciones del enunciado son verdaderas o falsas:
+
+1. Verdadero, calculando la media aritmética de cada alternativa: $d_1$ (45), $d_2$ (42.5), $d_3$ (44) y $d_4$ (57.5). La de menor coste medio es $d_2$.
+
+2. Verdadero, los costes máximos (peores escenarios) son: $d_1$ (68), $d_2$ (62), $d_3$ (58), $d_4$ (80). El menor de estos costes máximos es 58, que corresponde a $d_3$.
+
+3. Falso, ponderando el coste mínimo y máximo al 50%: $d_1$ (45), $d_2$ (45), $d_3$ (44) y $d_4$ (57.5). La mejor alternativa (la de menor valor ponderado) es $d_3$, no $d_1$.
+
+4. Falso, calculando la matriz de arrepentimiento restando el mínimo de cada columna ($e_1=22,  e_2=32,  e_3=48,  e_4=58$). Los arrepentimientos máximos resultantes son: $d_1$ (10), $d_2$ (6), $d_3$ (8) y $d_4$ (22). La alternativa óptima es la que tiene el menor arrepentimiento máximo, que es $d_2$ (6). La opción $d_4$ es la peor de todas.
+
+5. Verdadero, observando los datos, $d_2$ gana en Laplace y Savage, y en Wald se queda muy cerca de la óptima con un máximo acotado (62), evitando los grandes picos de riesgo de $d_1$ y $d_4$.
+
+
+### Problema 1
+
+**Enunciado 1:** Una empresa de tecnología necesita seleccionar un nuevo proveedor para los microchips de su próximo producto estrella.
+Dispone de tres alternativas: - $d_1$: Proveedor A .
+- $d_2$: Proveedor B .
+- $d_3$: Proveedor C .
+
+El impacto económico dependerá de la demanda que tenga el producto en el mercado, que se divide en tres posibles estados de la naturaleza: - $e_1$: Demanda Alta. - $e_2$: Demanda Media.
+- $e_3$: Demanda Baja.
+
+```{r}
+
+source("teoriadecision_funciones_incertidumbre.R")
+
+# Creamos la tabla de decisión 
+tabla_proveedores <- crea.tablaX(c(80, 50, 20,
+                                   100, 40, 10,
+                                   60, 60, 50), 
+                                 numalternativas = 3, numestados = 3)
+
+rownames(tabla_proveedores) <- c("Proveedor A (d1)", "Proveedor B (d2)", "Proveedor C (d3)")
+colnames(tabla_proveedores) <- c("Alta (e1)", "Media (e2)", "Baja (e3)")
+
+# Mostramos la tabla inicial
+tabla_proveedores
+```
+
+```{r}
+criterio.Wald(tabla_proveedores, favorable = TRUE)
+criterio.Optimista(tabla_proveedores, favorable = TRUE)
+criterio.Hurwicz(tabla_proveedores, alfa = 0.5, favorable = TRUE)
+criterio.Savage(tabla_proveedores, favorable = TRUE)
+criterio.Laplace(tabla_proveedores, favorable = TRUE)
+criterio.PuntoIdeal(tabla_proveedores, favorable = TRUE)
+```
+
+```{r}
+criterio.Wald(tabla_proveedores, favorable = FALSE)
+criterio.Optimista(tabla_proveedores, favorable = FALSE)
+criterio.Hurwicz(tabla_proveedores, alfa = 0.5, favorable = FALSE)
+criterio.Savage(tabla_proveedores, favorable = FALSE)
+criterio.Laplace(tabla_proveedores, favorable = FALSE)
+criterio.PuntoIdeal(tabla_proveedores, favorable = FALSE)
+```
+
+#### Preguntas sobre el Problema 1
+
+1.  En situación favorable (beneficios), el criterio de Wald recomienda la alternativa del Proveedor C ($d_3$) como la opción óptima.
+    **Verdadero**
+
+2.  Según el criterio Optimista en situación desfavorable (costos), la alternativa óptima es el Proveedor A ($d_1$) con un valor de 20.
+    **Falso**
+
+3.  El valor esperado para la alternativa del Proveedor C ($d_3$) según el criterio de Laplace en situación favorable es de aproximadamente 56.67.
+    **Verdadero**
+
+4.  Aplicando el criterio de Savage en situación favorable, la alternativa óptima recomendada es el Proveedor B ($d_2$).
+    **Falso**
+
+5.  En situación desfavorable, el criterio de Wald minimiza el riesgo eligiendo el Proveedor C ($d_3$) con un valor óptimo de 60.
+    **Verdadero**
+
+### Problema 2: Ampliación de un club de pádel local
+
+**Enunciado 2:** El gerente de un club de pádel está decidiendo qué tipo de pistas construir para la próxima temporada.
+Tiene el presupuesto para una de estas dos alternativas: - $d_1$: Construir Pistas Cubiertas (Indoor).
+- $d_2$: Construir Pistas Descubiertas (Outdoor).
+
+Los beneficios esperados (en miles de euros) dependerán de la climatología durante la temporada de invierno, que se clasifica en dos posibles estados de la naturaleza: - $e_1$: Invierno muy lluvioso.
+- $e_2$: Invierno seco y soleado.
+
+La estimación de beneficios es la siguiente: Si construyen pistas cubiertas y llueve, ganarán 50, y si hace seco ganarán 30 (la gente prefiere jugar fuera, pero mantienen clientela).
+Si construyen pistas descubiertas y llueve, tendrán pérdidas de -10 por cancelaciones, pero si hace seco ganarán 45.
+
+Al tratarse de beneficios, evaluaremos esta tabla en situación favorable utilizando la función conjunta de todos los criterios.
+
+```{r}
+source("teoriadecision_funciones_incertidumbre.R")
+
+# Creamos la tabla de decisión
+tabla_padel <- crea.tablaX(c(50, 30,
+                             -10, 45), 
+                           numalternativas = 2, numestados = 2)
+
+rownames(tabla_padel) <- c("Pistas Cubiertas (d1)", "Pistas Descubiertas (d2)")
+colnames(tabla_padel) <- c("Lluvia (e1)", "Seco (e2)")
+
+# Mostramos la tabla inicial
+tabla_padel
+
+# Resolución de todos los métodos en una única tabla 
+criterio.Todos(tabla_padel, alfa = 0.5, favorable = TRUE)
+```
+
+#### Preguntas sobre el Problema 2
+
+1.  Según el criterio de Wald , la alternativa óptima es construir Pistas Cubiertas ($d_1$).
+    **Verdadero**
+
+2.  Según el criterio Optimista, la alternativa óptima es construir Pistas Descubiertas ($d_2$) con un valor de 45.
+    **Falso**
+
+3.  El valor esperado para la alternativa de Pistas Cubiertas ($d_1$) según el criterio de Laplace es 40.
+    **Verdadero**
+
+4.  Aplicando el criterio de Savage, la alternativa óptima es construir Pistas Descubiertas ($d_2$).
+    **Falso**
+
+5.  En todos los criterios calculados por la función conjunta, la alternativa óptima recomendada es siempre construir Pistas Cubiertas ($d_1$).
+    **Verdadero**
