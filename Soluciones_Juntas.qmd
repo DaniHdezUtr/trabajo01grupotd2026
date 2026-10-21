@@ -1,6 +1,8 @@
 ---
-title: "Problemas_Juntos"
-format: html
+title: "Soluciones_Juntas"
+format: 
+  html: default
+  typst: default
 editor: visual
 ---
 ## Introducción
