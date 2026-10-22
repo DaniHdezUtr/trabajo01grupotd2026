@@ -5,10 +5,10 @@ format:
   typst: default
 editor: visual
 ---
+
 ## Introducción
 
 En esta parte volveremos a poner los enunciados de los problemas, pero ya haremos la resolución de ellos usando los códigos de R aprendidos en la asignatura.
-
 
 ### Problema 1
 
@@ -35,9 +35,10 @@ Una compañía dedicada al entretenimiento digital está evaluando en qué plata
 
 #### Resolución
 
-``` {r}
+```{r}
 source("teoriadecision_funciones_incertidumbre.R")
 ```
+
 Definimos la matriz de decisión en R:
 
 ```{r}
@@ -51,6 +52,7 @@ rownames(tabla_dec1) <- c("d1_PlayStation5", "d2_XboxSeriesX", "d3_NintendoSwitc
 colnames(tabla_dec1) <- c("e1_DemandaBaja", "e2_DemandaModerada", "e3_ExitoMasivo")
 print(tabla_dec1)
 ```
+
 Resolvemos con cada uno de los criterios:
 
 ```{r}
@@ -92,19 +94,18 @@ print(criterio.Savage(tabla_dec1, favorable = FALSE))
 cat("\n5. Criterio de Hurwicz (alfa = 0.5):\n")
 print(criterio.Hurwicz(tabla_dec1, alfa = 0.5, favorable = FALSE))
 ```
+
 Ahora comprobamos si las afirmaciones del enunciado son verdaderas o falsas:
 
-1. Verdadero, en situación favorable (beneficios), el criterio optimista busca el valor máximo absoluto de toda la matriz (Maximax). Los valores máximos de cada fila son: $d_1 (95)$, $d_2 (75)$, $d_3 (110)$, $d_4 (40)$. El máximo absoluto es 110, que corresponde a $d_3$.
+1.  Verdadero, en situación favorable (beneficios), el criterio optimista busca el valor máximo absoluto de toda la matriz (Maximax). Los valores máximos de cada fila son: $d_1 (95)$, $d_2 (75)$, $d_3 (110)$, $d_4 (40)$. El máximo absoluto es 110, que corresponde a $d_3$.
 
-2. Verdadero, en situación desfavorable (costes), el criterio de Wald evalúa el peor escenario de cada alternativa (el coste máximo de cada fila) y selecciona el menor de ellos (Minimax). Los valores máximos por fila son: $d_1 (95)$, $d_2 (75)$, $d_3 (110)$ y $d_4 (40)$. El menor de todos esos "peores escenarios" es 40, correspondiente a $d_4$.
+2.  Verdadero, en situación desfavorable (costes), el criterio de Wald evalúa el peor escenario de cada alternativa (el coste máximo de cada fila) y selecciona el menor de ellos (Minimax). Los valores máximos por fila son: $d_1 (95)$, $d_2 (75)$, $d_3 (110)$ y $d_4 (40)$. El menor de todos esos "peores escenarios" es 40, correspondiente a $d_4$.
 
-3. Falso, en situación desfavorable (costes), Laplace calcula la media de cada alternativa y busca la de menor valor.  $d_1$: (18 + 42 + 95) / 3 = 51.67,  $d_2$: (25 + 55 + 75) / 3 = 51.67,  $d_3$: (12 + 28 + 110) / 3 = 50.00,  $d_4$: (40 + 40 + 40) / 3 = 40.00La mejor alternativa (la que tiene menor media) es $d_4$ (40), no $d_1$.
+3.  Falso, en situación desfavorable (costes), Laplace calcula la media de cada alternativa y busca la de menor valor. $d_1$: (18 + 42 + 95) / 3 = 51.67, $d_2$: (25 + 55 + 75) / 3 = 51.67, $d_3$: (12 + 28 + 110) / 3 = 50.00, $d_4$: (40 + 40 + 40) / 3 = 40.00La mejor alternativa (la que tiene menor media) es $d_4$ (40), no $d_1$.
 
-4. Verdadero, en situación favorable, ponderamos el mejor y el peor valor de cada fila: $0.5 \times \text{Máximo} + 0.5 \times \text{Mínimo}$.
-$d_1$: 0.5(95) + 0.5(18) = 56.5,  $d_2$: 0.5(75) + 0.5(25) = 50.0,  $d_3$: 0.5(110) + 0.5(12) = 61.0,  $d_4$: 0.5(40) + 0.5(40) = 40.0La alternativa con el valor ponderado más alto es $d_3$ (61.0).
+4.  Verdadero, en situación favorable, ponderamos el mejor y el peor valor de cada fila: $0.5 \times \text{Máximo} + 0.5 \times \text{Mínimo}$. $d_1$: 0.5(95) + 0.5(18) = 56.5, $d_2$: 0.5(75) + 0.5(25) = 50.0, $d_3$: 0.5(110) + 0.5(12) = 61.0, $d_4$: 0.5(40) + 0.5(40) = 40.0La alternativa con el valor ponderado más alto es $d_3$ (61.0).
 
-5. Falso, Savage calcula la matriz de arrepentimiento restando cada valor al máximo de su columna ($e_1=40, e_2=55, e_3=110$). Los máximos arrepentimientos (peor perjuicio) por alternativa son:   $d_1$: (40-18=22, 55-42=13, 110-95=15) $\rightarrow$ Máximo = 22,   $d_2$: (40-25=15, 55-55=0, 110-75=35) $\rightarrow$ Máximo = 35,   $d_3$: (40-12=28, 55-28=27, 110-110=0) $\rightarrow$ Máximo = 28,   $d_4$: (40-40=0, 55-40=15, 110-40=70) $\rightarrow$ Máximo = 70.
-La alternativa óptima es la que minimiza este máximo arrepentimiento. El menor valor de arrepentimiento máximo es 22, correspondiente a $d_1$ (PlayStation 5), y no $d_2$.
+5.  Falso, Savage calcula la matriz de arrepentimiento restando cada valor al máximo de su columna ($e_1=40, e_2=55, e_3=110$). Los máximos arrepentimientos (peor perjuicio) por alternativa son: $d_1$: (40-18=22, 55-42=13, 110-95=15) $\rightarrow$ Máximo = 22, $d_2$: (40-25=15, 55-55=0, 110-75=35) $\rightarrow$ Máximo = 35, $d_3$: (40-12=28, 55-28=27, 110-110=0) $\rightarrow$ Máximo = 28, $d_4$: (40-40=0, 55-40=15, 110-40=70) $\rightarrow$ Máximo = 70. La alternativa óptima es la que minimiza este máximo arrepentimiento. El menor valor de arrepentimiento máximo es 22, correspondiente a $d_1$ (PlayStation 5), y no $d_2$.
 
 ### Problema 2:
 
@@ -147,34 +148,31 @@ rownames(tabla_dec2) <- c("Solar Fotovoltaica", "Eolico Terrestre", "Central Ter
 colnames(tabla_dec2) <- c("Marco estable", "Incremento costes", "Crisis suministros", "Saturación nudos")
 print(tabla_dec2)
 ```
+
 Resolvemos en una única tabla:
 
 ```{r}
 resultado_prob2<- criterio.Todos(tabla_dec2, alfa = 0.5, favorable = FALSE)
 print(resultado_prob2)
 ```
+
 Ahora comprobamos si las afirmaciones del enunciado son verdaderas o falsas:
 
-1. Verdadero, calculando la media aritmética de cada alternativa: $d_1$ (45), $d_2$ (42.5), $d_3$ (44) y $d_4$ (57.5). La de menor coste medio es $d_2$.
+1.  Verdadero, calculando la media aritmética de cada alternativa: $d_1$ (45), $d_2$ (42.5), $d_3$ (44) y $d_4$ (57.5). La de menor coste medio es $d_2$.
 
-2. Verdadero, los costes máximos (peores escenarios) son: $d_1$ (68), $d_2$ (62), $d_3$ (58), $d_4$ (80). El menor de estos costes máximos es 58, que corresponde a $d_3$.
+2.  Verdadero, los costes máximos (peores escenarios) son: $d_1$ (68), $d_2$ (62), $d_3$ (58), $d_4$ (80). El menor de estos costes máximos es 58, que corresponde a $d_3$.
 
-3. Falso, ponderando el coste mínimo y máximo al 50%: $d_1$ (45), $d_2$ (45), $d_3$ (44) y $d_4$ (57.5). La mejor alternativa (la de menor valor ponderado) es $d_3$, no $d_1$.
+3.  Falso, ponderando el coste mínimo y máximo al 50%: $d_1$ (45), $d_2$ (45), $d_3$ (44) y $d_4$ (57.5). La mejor alternativa (la de menor valor ponderado) es $d_3$, no $d_1$.
 
-4. Falso, calculando la matriz de arrepentimiento restando el mínimo de cada columna ($e_1=22,  e_2=32,  e_3=48,  e_4=58$). Los arrepentimientos máximos resultantes son: $d_1$ (10), $d_2$ (6), $d_3$ (8) y $d_4$ (22). La alternativa óptima es la que tiene el menor arrepentimiento máximo, que es $d_2$ (6). La opción $d_4$ es la peor de todas.
+4.  Falso, calculando la matriz de arrepentimiento restando el mínimo de cada columna ($e_1=22,  e_2=32,  e_3=48,  e_4=58$). Los arrepentimientos máximos resultantes son: $d_1$ (10), $d_2$ (6), $d_3$ (8) y $d_4$ (22). La alternativa óptima es la que tiene el menor arrepentimiento máximo, que es $d_2$ (6). La opción $d_4$ es la peor de todas.
 
-5. Verdadero, observando los datos, $d_2$ gana en Laplace y Savage, y en Wald se queda muy cerca de la óptima con un máximo acotado (62), evitando los grandes picos de riesgo de $d_1$ y $d_4$.
-
+5.  Verdadero, observando los datos, $d_2$ gana en Laplace y Savage, y en Wald se queda muy cerca de la óptima con un máximo acotado (62), evitando los grandes picos de riesgo de $d_1$ y $d_4$.
 
 ### Problema 1
 
-**Enunciado 1:** Una empresa de tecnología necesita seleccionar un nuevo proveedor para los microchips de su próximo producto estrella.
-Dispone de tres alternativas: - $d_1$: Proveedor A .
-- $d_2$: Proveedor B .
-- $d_3$: Proveedor C .
+**Enunciado 1:** Una empresa de tecnología necesita seleccionar un nuevo proveedor para los microchips de su próximo producto estrella. Dispone de tres alternativas: - $d_1$: Proveedor A . - $d_2$: Proveedor B . - $d_3$: Proveedor C .
 
-El impacto económico dependerá de la demanda que tenga el producto en el mercado, que se divide en tres posibles estados de la naturaleza: - $e_1$: Demanda Alta. - $e_2$: Demanda Media.
-- $e_3$: Demanda Baja.
+El impacto económico dependerá de la demanda que tenga el producto en el mercado, que se divide en tres posibles estados de la naturaleza: - $e_1$: Demanda Alta. - $e_2$: Demanda Media. - $e_3$: Demanda Baja.
 
 ```{r}
 
@@ -213,32 +211,33 @@ criterio.PuntoIdeal(tabla_proveedores, favorable = FALSE)
 
 #### Preguntas sobre el Problema 1
 
-1.  En situación favorable (beneficios), el criterio de Wald recomienda la alternativa del Proveedor C ($d_3$) como la opción óptima.
-    **Verdadero**
+1.  En situación favorable (beneficios), el criterio de Wald recomienda la alternativa del Proveedor C ($d_3$) como la opción óptima. **Verdadero**
+En situación favorable (beneficios), el criterio de Wald (Maximin) busca el peor escenario de cada alternativa (los mínimos: 20 para $d_1$, 10 para $d_2$ y 50 para $d_3$) y selecciona el valor más alto. Ese valor máximo es 50, correspondiente a la alternativa $d_3$.
 
-2.  Según el criterio Optimista en situación desfavorable (costos), la alternativa óptima es el Proveedor A ($d_1$) con un valor de 20.
-    **Falso**
 
-3.  El valor esperado para la alternativa del Proveedor C ($d_3$) según el criterio de Laplace en situación favorable es de aproximadamente 56.67.
-    **Verdadero**
+2.  Según el criterio Optimista en situación desfavorable (costos), la alternativa óptima es el Proveedor A ($d_1$) con un valor de 20. **Falso**
+En situación desfavorable (costos), el criterio Optimista busca el valor más bajo de toda la tabla (Minimin). El mínimo absoluto es 10, que corresponde a la alternativa $d_2$ (Proveedor B), y no 20 para $d_1$ como indica la afirmación. 
 
-4.  Aplicando el criterio de Savage en situación favorable, la alternativa óptima recomendada es el Proveedor B ($d_2$).
-    **Falso**
 
-5.  En situación desfavorable, el criterio de Wald minimiza el riesgo eligiendo el Proveedor C ($d_3$) con un valor óptimo de 60.
-    **Verdadero**
+3.  El valor esperado para la alternativa del Proveedor C ($d_3$) según el criterio de Laplace en situación favorable es de aproximadamente 56.67. **Verdadero**
+El criterio de Laplace en situación favorable calcula la media aritmética de cada alternativa. Para el Proveedor C ($d_3$), los valores son 60, 60 y 50, cuya media calculada por R es exactamente 56.66667 (aproximadamente 56.67). 
+
+
+4.  Aplicando el criterio de Savage en situación favorable, la alternativa óptima recomendada es el Proveedor B ($d_2$). **Falso**
+Aplicando el criterio de Savage en situación favorable (minimizar el arrepentimiento máximo), los valores máximos de penalización calculados son 30 para $d_1$, 40 para $d_2$ y 40 para $d_3$. Al buscar el mínimo de estos arrepentimientos, la alternativa óptima es $d_1$ con 30, no $d_2$.
+
+
+5.  En situación desfavorable, el criterio de Wald minimiza el riesgo eligiendo el Proveedor C ($d_3$) con un valor óptimo de 60. **Verdadero**
+En situación desfavorable, el criterio de Wald (Minimax) se pone en el peor caso de cada alternativa (sus valores máximos: 80 para $d_1$, 100 para $d_2$ y 60 para $d_3$) y elige el menor de ellos. El menor de esos máximos es efectivamente 60, correspondiente a $d_3$.
+
 
 ### Problema 2: Ampliación de un club de pádel local
 
-**Enunciado 2:** El gerente de un club de pádel está decidiendo qué tipo de pistas construir para la próxima temporada.
-Tiene el presupuesto para una de estas dos alternativas: - $d_1$: Construir Pistas Cubiertas (Indoor).
-- $d_2$: Construir Pistas Descubiertas (Outdoor).
+**Enunciado 2:** El gerente de un club de pádel está decidiendo qué tipo de pistas construir para la próxima temporada. Tiene el presupuesto para una de estas dos alternativas: - $d_1$: Construir Pistas Cubiertas (Indoor). - $d_2$: Construir Pistas Descubiertas (Outdoor).
 
-Los beneficios esperados (en miles de euros) dependerán de la climatología durante la temporada de invierno, que se clasifica en dos posibles estados de la naturaleza: - $e_1$: Invierno muy lluvioso.
-- $e_2$: Invierno seco y soleado.
+Los beneficios esperados (en miles de euros) dependerán de la climatología durante la temporada de invierno, que se clasifica en dos posibles estados de la naturaleza: - $e_1$: Invierno muy lluvioso. - $e_2$: Invierno seco y soleado.
 
-La estimación de beneficios es la siguiente: Si construyen pistas cubiertas y llueve, ganarán 50, y si hace seco ganarán 30 (la gente prefiere jugar fuera, pero mantienen clientela).
-Si construyen pistas descubiertas y llueve, tendrán pérdidas de -10 por cancelaciones, pero si hace seco ganarán 45.
+La estimación de beneficios es la siguiente: Si construyen pistas cubiertas y llueve, ganarán 50, y si hace seco ganarán 30 (la gente prefiere jugar fuera, pero mantienen clientela). Si construyen pistas descubiertas y llueve, tendrán pérdidas de -10 por cancelaciones, pero si hace seco ganarán 45.
 
 Al tratarse de beneficios, evaluaremos esta tabla en situación favorable utilizando la función conjunta de todos los criterios.
 
@@ -262,33 +261,35 @@ criterio.Todos(tabla_padel, alfa = 0.5, favorable = TRUE)
 
 #### Preguntas sobre el Problema 2
 
-1.  Según el criterio de Wald , la alternativa óptima es construir Pistas Cubiertas ($d_1$).
-    **Verdadero**
+1.  Según el criterio de Wald , la alternativa óptima es construir Pistas Cubiertas ($d_1$). **Verdadero**
+El criterio de Wald selecciona la alternativa que garantiza el mejor resultado en el peor de los casos. El peor caso de $d_1$ es 30 y el de $d_2$ es -10; por tanto, escoge $d_1$ con un valor óptimo de 30. 
 
-2.  Según el criterio Optimista, la alternativa óptima es construir Pistas Descubiertas ($d_2$) con un valor de 45.
-    **Falso**
 
-3.  El valor esperado para la alternativa de Pistas Cubiertas ($d_1$) según el criterio de Laplace es 40.
-    **Verdadero**
+2.  Según el criterio Optimista, la alternativa óptima es construir Pistas Descubiertas ($d_2$) con un valor de 45. **Falso**
+El criterio Optimista busca el valor máximo absoluto de toda la matriz. Como el valor máximo de $d_1$ es 50 y el de $d_2$ es 45, la alternativa óptima elegida por este criterio es $d_1$ con 50, y no $d_2$. 
 
-4.  Aplicando el criterio de Savage, la alternativa óptima es construir Pistas Descubiertas ($d_2$).
-    **Falso**
 
-5.  En todos los criterios calculados por la función conjunta, la alternativa óptima recomendada es siempre construir Pistas Cubiertas ($d_1$).
-    **Verdadero**
+3.  El valor esperado para la alternativa de Pistas Cubiertas ($d_1$) según el criterio de Laplace es 40. **Verdadero**
+El criterio de Laplace calcula el valor esperado asumiendo equiprobabilidad. La media aritmética de la alternativa $d_1$ (50 y 30) arroja un valor exacto de 40.0, tal y como refleja la tabla resumen.
+
+
+4.  Aplicando el criterio de Savage, la alternativa óptima es construir Pistas Descubiertas ($d_2$). **Falso**
+Según la tabla conjunta para el criterio de Savage, el arrepentimiento máximo para $d_1$ es 15, mientras que para $d_2$ es 60. Al buscar minimizar dicho arrepentimiento, la alternativa ganadora es $d_1$, no $d_2$.
+
+
+5.  En todos los criterios calculados por la función conjunta, la alternativa óptima recomendada es siempre construir Pistas Cubiertas ($d_1$). **Verdadero**
+Observando la columna "Veces Optima" generada por la función criterio.Todos(), la alternativa $d_1$ (Pistas Cubiertas) resulta ganadora en los 6 criterios evaluados (Wald, Optimista, Hurwicz, Savage, Laplace y Punto Ideal), mientras que $d_2$ tiene 0 victorias. 
 
 
 # Problema 1: Inversión en Energías Renovables
 
-
-
 Sea la siguiente tabla de decisión:
 
-| Alternativas      | $E_1$ | $E_2$ | $E_3$ |
-|:------------------|:-----:|:-----:|:-----:|
-| $A_1$             |  120  |  60   |  10   |
-| $A_2$             |  180  |  40   |  -20  |
-| $A_3$             |  250  |  20   |  -60  |
+| Alternativas | $E_1$ | $E_2$ | $E_3$ |
+|:-------------|:-----:|:-----:|:-----:|
+| $A_1$        |  120  |  60   |  10   |
+| $A_2$        |  180  |  40   |  -20  |
+| $A_3$        |  250  |  20   |  -60  |
 
 ## Cuestionario (Verdadero o Falso)
 
@@ -300,11 +301,10 @@ Indique razonadamente si las siguientes afirmaciones son verdaderas (V) o falsas
 4.  El criterio de Hurwicz con un índice de optimismo $\alpha = 0.6$ selecciona la alternativa $A_3$ en situación favorable.
 5.  En situación desfavorable (suponiendo que los valores representan costes), el criterio de Savage (minimax del arrepentimiento) selecciona la alternativa $A_1$.
 
-
 ## Código de la solución
 
-
 Veamos los métodos para el caso favorable:
+
 ```{r}
 source("teoriadecision_funciones_incertidumbre.R")
 datos = c(120, 60, 10, 180, 40, -20, 250, 20, -60)#Datos del problema
@@ -353,6 +353,7 @@ paste(
 ```
 
 Y en el caso desfavorable:
+
 ```{r}
 source("teoriadecision_funciones_incertidumbre.R")
 datos = c(120, 60, 10, 180, 40, -20, 250, 20, -60)#Datos del problema
@@ -414,8 +415,6 @@ Por tanto las respuestas a las preguntas inciales serán:
 
 5.  En situación desfavorable (suponiendo que los valores representan costes), el criterio de Savage (minimax del arrepentimiento) selecciona la alternativa $A_1$. **Falso**
 
-
-
 # Problema 2: Planificación Logística ante Contingencias Climáticas
 
 Una compañía de transporte internacional de mercancías debe decidir la ruta de distribución para una flota de camiones de alta capacidad que debe cruzar una cordillera durante la temporada invernal. Existen cuatro posibles rutas alternativas ($R_1$, $R_2$, $R_3$ y $R_4$) que implican diferentes costes operativos y de tiempo (en miles de euros), los cuales dependen de la severidad de las condiciones meteorológicas imprevistas que se presenten:
@@ -444,7 +443,9 @@ Indique si las siguientes afirmaciones derivadas del análisis conjunto mediante
 5.  El método de Hurwicz, considerando un coeficiente de optimismo pesimista ($\alpha = 0.5$), identifica a la ruta $R_3$ como una de las opciones más equilibradas frente al riesgo de tormentas extremas.
 
 ## Código de la solución
+
 En este caso usaremos la funcion que nos da todos los metodos a la vez:
+
 ```{r}
 datos2=c(15,	28,	55,
         12,	35,	70,
@@ -459,9 +460,10 @@ SolDES=criterio.Todos(tabla2,alfa = 0.5,favorable = FALSE)
 library(knitr)
 kable(SolDES,caption = "Caso desfavorable")
 ```
+
 ## Respuestas
-Por tanto las soluciones de las preguntas iniciales son:
-1.  Al tratarse de una matriz de costes en situación desfavorable, el criterio de Wald (minimax) selecciona la ruta $R_4$ (Ruta Costera) por tener el coste máximo más bajo ($35$). **Verdadero**
+
+Por tanto las soluciones de las preguntas iniciales son: 1. Al tratarse de una matriz de costes en situación desfavorable, el criterio de Wald (minimax) selecciona la ruta $R_4$ (Ruta Costera) por tener el coste máximo más bajo ($35$). **Verdadero**
 
 2.  Aplicando el criterio optimista (minimin) para costes, la mejor opción es la ruta $R_2$ (Ruta Central) gracias a su coste mínimo absoluto de $12$ en el estado $E_1$. **Verdadero**
 
